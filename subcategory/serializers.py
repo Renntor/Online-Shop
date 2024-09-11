@@ -1,18 +1,18 @@
 from rest_framework import serializers
-from category.models import Category
+from subcategory.models import Subcategory
 
-class CategorySerializers(serializers.ModelSerializer):
+class SubcategorySerializers(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
         slug = validated_data('slug')
-        category = Category(**validated_data)
+        category = Subcategory(**validated_data)
         category.slug(slug)
         category.save()
         return category
 
 
     class Meta:
-        model = Category
+        model = Subcategory
         field = ('name', 'image', )
         extra_kwargs = {'slug': {'read_only': True}}
