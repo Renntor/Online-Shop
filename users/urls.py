@@ -3,6 +3,7 @@ from users.apps import UsersConfig
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 from users.views import UserListCreateAPIView, UserRetrieveUpdateDestroyAPIView
 
+
 app_name = UsersConfig.name
 
 urlpatterns = [

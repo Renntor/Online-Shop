@@ -11,4 +11,5 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 class UserListCreateAPIView(generics.ListCreateAPIView):
     queryset = User.objects.all()
+    permission_classes = [IsAdminUser]
     serializer_class = UserSerializers
