@@ -9,11 +9,14 @@ class Product(models.Model):
     price = models.PositiveIntegerField(verbose_name='price')
 
 
-
-
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = 'product'
         verbose_name_plural ='products'
+
+class ProductImage(models.Model):
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='product')
+    image = models.ImageField(verbose_name='image')
