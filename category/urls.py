@@ -6,6 +6,6 @@ from category.views import CategoryListAPIView, CategoryRetrieveAPIView
 app_name = CategoryConfig.name
 
 urlpatterns = [
-    path('', CategoryRetrieveAPIView.as_view(), name='retrieve_category'),
-    path('<slug:slug>/', CategoryListAPIView.as_view(), name='list_category')
+    path('<slug:slug>/', CategoryRetrieveAPIView.as_view(), name='retrieve_category'),
+    path('', CategoryListAPIView.as_view(), name='list_category')
  ]

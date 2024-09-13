@@ -5,6 +5,6 @@ from subcategory.views import SubcategoryRetrieveAPIView, SubcategoryListAPIView
 app_name = SubcategoryConfig.name
 
 urlpatterns = [
-    path('<slug:slug>/', SubcategoryListAPIView.as_view(), name='list_subcategory'),
-    path('', SubcategoryRetrieveAPIView.as_view(), name='retrieve_subcategory'),
+    path('', SubcategoryListAPIView.as_view(), name='list_subcategory'),
+    path('<slug:slug>/', SubcategoryRetrieveAPIView.as_view(), name='retrieve_subcategory'),
 ]

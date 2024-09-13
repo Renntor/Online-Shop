@@ -1,10 +1,11 @@
 from rest_framework.response import Response
+from rest_framework import status
 from product.models import Product, Cart
 from rest_framework import generics
-from product.serializers import ProductSerializers, CartSerializers, CartCreateUpdateSerializers
+from product.serializers import ProductSerializers, CartCreateUpdateSerializers
 from product.pagination import MyPagination
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
+
 
 
 class ProductRetrieveAPIView(generics.RetrieveAPIView):
@@ -20,26 +21,62 @@ class ProductListAPIView(generics.ListAPIView):
 
 class CartListCreateAPI(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = CartCreateUpdateSerializers
 
-    def post(self, request, *args, **kwargs):
-        serialize = CartCreateUpdateSerializers(data=request.data)
-        if serialize.is_valid():
-            cart, created = Cart.objects.get_or_create(
-                user=request.user,
-                product=serialize.validated_data['product'],
-                defaults={'quantity': serialize.validated_data['quantity']}
-            )
-            if not created:
-                cart.quantity += serialize.validated_data['quantity']
-                cart.save()
-            return Response(Cart(cart).data, status=status.HTTP_201_CREATED)
-        return Response(serialize.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, *args, **kwargs):
-       cart = Cart.objects.filter(user=request.user)
-       total = sum([product.price_calculation() for product in cart])
-       serializer = Cart(cart, many=True)
-       return Response({
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
+
+
+    def perform_create(self, serializer):
+        product = serializer.validated_data['product']
+        quantity = serializer.validated_data['quantity']
+
+        cart, created = Cart.objects.get_or_create(
+            user=self.request.user,
+            product=product,
+            defaults={'quantity': quantity}
+        )
+        if not created:
+            cart.quantity += quantity
+            cart.save()
+        if quantity == 0:
+            cart.delete()
+
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        total = sum([product.price_calculation() for product in queryset])
+
+        return Response({
            'cart':serializer.data,
            'total_price': total
        })
+
+class CartUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CartCreateUpdateSerializers
+
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        cart = Cart.objects.get(
+            user=self.request.user,
+            product=data['product']
+        )
+        if cart:
+            if data['quantity'] == 0:
+                cart.delete()
+                return Response(
+                    {}
+                )
+            cart.quantity = data['quantity']
+            cart.save()
+            return Response(
+                self.get_serializer(cart).data
+            )
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)

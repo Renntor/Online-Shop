@@ -13,19 +13,13 @@ class ProductSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        field = ('name', 'price',)
+        fields = ('name', 'price', 'subcategory',)
         extra_kwargs = {'slug': {'read_only': True}}
 
 
-class CartSerializers(serializers.ModelSerializer):
-    product = Cart
-
-    class Meta:
-        model = Cart
-        field = ('product', 'quantity', 'total_price',)
-
-
 class CartCreateUpdateSerializers(serializers.ModelSerializer):
+    product_name = serializers.CharField(source='product.name', read_only=True)
+
     class Meta:
         model = Cart
-        field = ('product', 'quantity')
+        fields = ('product', 'product_name', 'quantity')
