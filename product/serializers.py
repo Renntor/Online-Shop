@@ -23,3 +23,14 @@ class CartCreateUpdateSerializers(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ('product', 'product_name', 'quantity')
+
+
+class CartDestroy(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = ('product',)
+
+class CartsDestroy(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        exclude = '__all__'
