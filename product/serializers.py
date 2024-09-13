@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from product.models import Product
+from product.models import Product, Cart
+
 
 class ProductSerializers(serializers.ModelSerializer):
-
 
     def create(self, validated_data):
         slug = validated_data('slug')
@@ -11,8 +11,21 @@ class ProductSerializers(serializers.ModelSerializer):
         category.save()
         return category
 
-
     class Meta:
         model = Product
-        field = ('name', 'price', )
+        field = ('name', 'price',)
         extra_kwargs = {'slug': {'read_only': True}}
+
+
+class CartSerializers(serializers.ModelSerializer):
+    product = Cart
+
+    class Meta:
+        model = Cart
+        field = ('product', 'quantity', 'total_price',)
+
+
+class CartCreateUpdateSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        field = ('product', 'quantity')
