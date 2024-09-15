@@ -30,6 +30,14 @@ class ProductSerializers(serializers.ModelSerializer):
 class CartCreateUpdateSerializers(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
 
+    def validate(self, data):
+        if (data.get("product", None) is None ) or (data.get('quantity', None) is None):
+            raise serializers.ValidationError(
+                'You must enter the product name and quantity'
+            )
+
+        return data
+
     class Meta:
         model = Cart
         fields = ('product', 'product_name', 'quantity')
