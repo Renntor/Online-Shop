@@ -11,6 +11,7 @@ class ProductRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializers
     pagination_class = MyPagination
+    lookup_field = 'slug'
 
 
 class ProductListAPIView(generics.ListAPIView):

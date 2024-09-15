@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import CASCADE
-from rest_framework.request import override_method
+
 
 from subcategory.models import Subcategory
 from users.models import User
@@ -21,7 +21,7 @@ class Product(models.Model):
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='product')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='image', verbose_name='product')
     image = models.ImageField(verbose_name='image')
 
     class Meta:

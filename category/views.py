@@ -8,9 +8,9 @@ class CategoryRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializers
     pagination_class = MyPagination
+    lookup_field = 'slug'
+
 
 class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializers
-
-

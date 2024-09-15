@@ -1,8 +1,17 @@
 from rest_framework import serializers
-from product.models import Product, Cart
+from product.models import Product, Cart, ProductImage
+from subcategory.serializers import SubcategoryCartSerializers
+
+
+class ProductImageSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ('image',)
 
 
 class ProductSerializers(serializers.ModelSerializer):
+    subcategory = SubcategoryCartSerializers()
+    image = ProductImageSerializers(many=True, read_only=True)
 
     def create(self, validated_data):
         slug = validated_data('slug')
@@ -13,7 +22,8 @@ class ProductSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('name', 'price', 'subcategory',)
+        fields = ('name', 'price', 'subcategory', 'image',)
+        lookup_field = 'slug'
         extra_kwargs = {'slug': {'read_only': True}}
 
 
@@ -29,6 +39,7 @@ class CartDestroy(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ('product',)
+
 
 class CartsDestroy(serializers.ModelSerializer):
     class Meta:

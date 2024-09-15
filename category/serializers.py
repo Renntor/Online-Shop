@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from category.models import Category
 
-class CategorySerializers(serializers.ModelSerializer):
 
+class CategorySerializers(serializers.ModelSerializer):
 
     def create(self, validated_data):
         slug = validated_data('slug')
@@ -11,8 +11,14 @@ class CategorySerializers(serializers.ModelSerializer):
         category.save()
         return category
 
-
     class Meta:
         model = Category
-        field = ('name', 'image', )
+        fields = ('name', 'image',)
+        lookup_field = 'slug'
         extra_kwargs = {'slug': {'read_only': True}}
+
+
+class CategoryCartSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('name',)
